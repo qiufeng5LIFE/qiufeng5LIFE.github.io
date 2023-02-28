@@ -1,0 +1,674 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="andrew">
+  <meta name="keywords" content="">
+  
+    <meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序中的微信支付-申请退款">
+<meta property="og:url" content="https://qiufeng5life.github.io/2017/05/05/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-%E7%94%B3%E8%AF%B7%E9%80%80%E6%AC%BE/index.html">
+<meta property="og:site_name" content="Drew Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/xavi-cabrera-1506394-unsplash.jpg">
+<meta property="article:published_time" content="2017-05-05T09:05:33.000Z">
+<meta property="article:modified_time" content="2023-02-28T03:39:24.858Z">
+<meta property="article:author" content="andrew">
+<meta property="article:tag" content="Wechat Pay">
+<meta property="article:tag" content="Wechat">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/xavi-cabrera-1506394-unsplash.jpg">
+  
+  
+  
+  <title>微信小程序中的微信支付-申请退款 - Drew Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qiufeng5life.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Drew Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="微信小程序中的微信支付-申请退款"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2017-05-05 17:05" pubdate>
+          2017年5月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">微信小程序中的微信支付-申请退款</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://drewlife.oss-cn-shanghai.aliyuncs.com/xavi-cabrera-1506394-unsplash.jpg" srcset="/img/loading.gif" lazyload></p>
+<span id="more"></span>
+
+<blockquote>
+<p>微信支付的退款需要双向证书验证！证书使用可参考微信支付<a target="_blank" rel="noopener" href="https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=15_1">官方文档</a></p>
+</blockquote>
+<ul>
+<li><p>证书不应该放在项目目录，应该放在有访问权限控制的目录**</p>
+</li>
+<li><p>交易时间超过一年无法完成退款操作</p>
+</li>
+<li><p>退款订单依赖于订单支付时形成的订单号，可以是自定义的订单号，也可以是微信生成的订单号</p>
+</li>
+<li><p>可以单笔交易分多次退款，但是退款总额不能超过订单总额</p>
+</li>
+</ul>
+<h6 id="需要的参数"><a href="#需要的参数" class="headerlink" title="需要的参数"></a>需要的参数</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js">$appid = <span class="hljs-string">&#x27;xxxxxxxxxxxxx&#x27;</span>;<br>$mch_id = <span class="hljs-string">&#x27;xxxxxxxxxxxx&#x27;</span>;  <span class="hljs-comment">//商户名</span><br>$nonce_str = <span class="hljs-title function_">nonceStr</span>();  <span class="hljs-comment">//随机字符串</span><br>$out_trade_no = $order_info-&gt;order_sn;   <span class="hljs-comment">//订单号</span><br>$out_refund_no = $order_info-&gt;order_sn;   <span class="hljs-comment">//退货号</span><br>**$refund_fee = <span class="hljs-title function_">number_format</span>($order_info-&gt;goods_amount*<span class="hljs-number">100</span>,<span class="hljs-number">0</span>); <span class="hljs-comment">//退款总额  金额单位为分，不能有小数**</span><br>**$total_fee = <span class="hljs-title function_">number_format</span>($order_info-&gt;goods_amount*<span class="hljs-number">100</span>,<span class="hljs-number">0</span>);  <span class="hljs-comment">//商品总额  金额单位为分，不能有小数**</span><br>$op_user_id = <span class="hljs-string">&#x27;xxxxxxx&#x27;</span>;  <span class="hljs-comment">//操作员id  可以直接填写商户号</span><br>$key = <span class="hljs-string">&#x27;xxxxxxxxxxxxxxxxxxxxxxxxx&#x27;</span>;   <span class="hljs-comment">//商户支付平台的key</span><br></code></pre></td></tr></table></figure>
+<h6 id="随机字符串生成函数"><a href="#随机字符串生成函数" class="headerlink" title="随机字符串生成函数"></a>随机字符串生成函数</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 签名设置中随机字符串</span><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> <span class="hljs-variable">string</span></span><br><span class="hljs-comment">     */</span><br>    public <span class="hljs-keyword">static</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">nonceStr</span>(<span class="hljs-params"></span>)&#123;<br>        $chars = <span class="hljs-string">&quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;</span>;<br>        $str =<span class="hljs-string">&quot;&quot;</span>;<br>        $length = <span class="hljs-number">32</span>;<br>        <span class="hljs-keyword">for</span>($i = <span class="hljs-number">0</span>; $i &lt; $length; $i++)&#123;<br>            $str .= <span class="hljs-title function_">substr</span>($chars, <span class="hljs-title function_">mt_rand</span>(<span class="hljs-number">0</span>, <span class="hljs-title function_">strlen</span>($chars)-<span class="hljs-number">1</span>), <span class="hljs-number">1</span>);<br>        &#125;<br>        <span class="hljs-comment">// 随机字符串</span><br>        <span class="hljs-keyword">return</span> $str;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<h6 id="将以上全部参数进行签名签名算法"><a href="#将以上全部参数进行签名签名算法" class="headerlink" title="将以上全部参数进行签名签名算法"></a>将以上全部参数进行签名<a target="_blank" rel="noopener" href="https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=15_1">签名算法</a></h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js">$att = [];<br>$att[<span class="hljs-string">&#x27;appid&#x27;</span>] = $appid;<br>$att[<span class="hljs-string">&#x27;mch_id&#x27;</span>] = $mch_id;<br>$att[<span class="hljs-string">&#x27;nonce_str&#x27;</span>] = $nonce_str;<br>$att[<span class="hljs-string">&#x27;out_trade_no&#x27;</span>] = $out_trade_no;<br>$att[<span class="hljs-string">&#x27;out_refund_no&#x27;</span>] = $out_refund_no;<br>$att[<span class="hljs-string">&#x27;refund_fee&#x27;</span>] = $refund_fee;<br>$att[<span class="hljs-string">&#x27;total_fee&#x27;</span>] = $total_fee;<br>$att[<span class="hljs-string">&#x27;op_user_id&#x27;</span>] = $op_user_id;<br>$sign = <span class="hljs-title class_">Wx</span>::<span class="hljs-title class_">MakeSign</span>($att,$key);  <span class="hljs-comment">//生成签名</span><br></code></pre></td></tr></table></figure>
+<h6 id="生成签名函数"><a href="#生成签名函数" class="headerlink" title="生成签名函数"></a>生成签名函数</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">$att</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">$key</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span> <span class="hljs-variable">string</span></span><br><span class="hljs-comment"> */</span><br>public <span class="hljs-keyword">static</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">MakeSign</span>(<span class="hljs-params">$att, $key</span>)<br>&#123;<br>    <span class="hljs-comment">//签名步骤一：按字典序排序参数</span><br>    <span class="hljs-title function_">ksort</span>($att);<br>    $string = <span class="hljs-title class_">ToUrlParams</span>($att);<br>    <span class="hljs-comment">//签名步骤二：在string后加入KEY</span><br>    $string = $string . <span class="hljs-string">&quot;&amp;key=&quot;</span>.<span class="hljs-property">$key</span>;<br>    <span class="hljs-comment">//签名步骤三：MD5加密</span><br>    $string = <span class="hljs-title function_">md5</span>($string);<br>    <span class="hljs-comment">//签名步骤四：所有字符转为大写</span><br>    $result = <span class="hljs-title function_">strtoupper</span>($string);<br>    <span class="hljs-keyword">return</span> $result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h6 id="将签名后的sign和以上除key以外的所有参数转成xml格式，得到最终的发送数据"><a href="#将签名后的sign和以上除key以外的所有参数转成xml格式，得到最终的发送数据" class="headerlink" title="将签名后的sign和以上除key以外的所有参数转成xml格式，得到最终的发送数据"></a>将签名后的sign和以上除key以外的所有参数转成xml格式，得到最终的发送数据</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">$att[<span class="hljs-string">&#x27;sign&#x27;</span>] = $sign;<br>$xml_data = <span class="hljs-title class_">ToXml</span>($att);<br></code></pre></td></tr></table></figure>
+<h6 id="array转xml格式函数"><a href="#array转xml格式函数" class="headerlink" title="array转xml格式函数"></a>array转xml格式函数</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 输出xml字符</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@throws</span> <span class="hljs-variable">WxPayException</span></span><br><span class="hljs-comment"> **/</span><br>public <span class="hljs-keyword">static</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">ToXml</span>(<span class="hljs-params">$result</span>)<br>&#123;<br>    $xml = <span class="hljs-string">&quot;&lt;xml&gt;&quot;</span>;<br>    foreach ($result <span class="hljs-keyword">as</span> $key=&gt;$val)<br>    &#123;<br>        $xml.=<span class="hljs-string">&quot;&lt;&quot;</span>.<span class="hljs-property">$key</span>.<span class="hljs-string">&quot;&gt;&lt;![CDATA[&quot;</span>.<span class="hljs-property">$val</span>.<span class="hljs-string">&quot;]]&gt;&lt;/&quot;</span>.<span class="hljs-property">$key</span>.<span class="hljs-string">&quot;&gt;&quot;</span>;<br>    &#125;<br>    $xml.=<span class="hljs-string">&quot;&lt;/xml&gt;&quot;</span>;<br>    <span class="hljs-keyword">return</span> $xml;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h6 id="发送退款请求"><a href="#发送退款请求" class="headerlink" title="发送退款请求"></a>发送退款请求</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js">$url = <span class="hljs-string">&#x27;https://api.mch.weixin.qq.com/secapi/pay/refund&#x27;</span>; <span class="hljs-comment">// 退款微信接口准备</span><br>$result = $this-&gt;<span class="hljs-title function_">postXmlCurl</span>($xml_data,$url);<br><span class="hljs-keyword">return</span> $result;<br></code></pre></td></tr></table></figure>
+<h6 id="退款证书验证及退款请求"><a href="#退款证书验证及退款请求" class="headerlink" title="退款证书验证及退款请求"></a>退款证书验证及退款请求</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">$xml_data</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@return</span> <span class="hljs-variable">mixed</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@throws</span> \App\Models\WxPayException</span><br><span class="hljs-comment">   */</span><br>  public <span class="hljs-keyword">function</span> <span class="hljs-title function_">postXmlCurl</span>(<span class="hljs-params">$xml_data,$url</span>)<br>  &#123;<br>      $useCert = <span class="hljs-literal">true</span>;<br>      $second = <span class="hljs-number">6</span>;<br>      $ch = <span class="hljs-title function_">curl_init</span>();<br>      <span class="hljs-comment">// 设置超时</span><br>      <span class="hljs-title function_">curl_setopt</span>($ch, <span class="hljs-variable constant_">CURLOPT_TIMEOUT</span>, $second);<br>      <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_URL</span>, $url);<br>      <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSL_VERIFYPEER</span>,<span class="hljs-variable constant_">TRUE</span>);<br>      <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSL_VERIFYHOST</span>,<span class="hljs-number">2</span>);<span class="hljs-comment">//严格校验</span><br>      <span class="hljs-comment">// 设置header</span><br>      <span class="hljs-title function_">curl_setopt</span>($ch, <span class="hljs-variable constant_">CURLOPT_HEADER</span>, <span class="hljs-variable constant_">FALSE</span>);<br>      <span class="hljs-comment">// 要求结果为字符串且输出到屏幕上</span><br>      <span class="hljs-title function_">curl_setopt</span>($ch, <span class="hljs-variable constant_">CURLOPT_RETURNTRANSFER</span>, <span class="hljs-variable constant_">TRUE</span>);<br>      <span class="hljs-comment">// 退款严格使用证书，必须是公众号所对应的商户平台下的证书才可以，安全不的外泄</span><br>      <span class="hljs-keyword">if</span>($useCert == <span class="hljs-literal">true</span>)&#123;<br>          <span class="hljs-comment">// 设置证书</span><br>          <span class="hljs-comment">// 使用证书：cert 与 key 分别属于两个.pem文件   </span><br>          <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSLCERTTYPE</span>,<span class="hljs-string">&#x27;PEM&#x27;</span>);<br>          $path_cert = <span class="hljs-title function_">dirname</span>(__FILE__) . <span class="hljs-string">&#x27;/cert/apiclient_cert.pem&#x27;</span>;    <span class="hljs-comment">//证书路径必须是lunix下的物理路径（绝对路径）    </span><br>          <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSLCERT</span>,$path_cert);<br>          <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSLKEYTYPE</span>,<span class="hljs-string">&#x27;PEM&#x27;</span>);<br>          $path_key = <span class="hljs-title function_">dirname</span>(__FILE__) . <span class="hljs-string">&#x27;/cert/apiclient_key.pem&#x27;</span>;      <span class="hljs-comment">//证书路径必须是lunix下的物理路径（绝对路径）</span><br>          <span class="hljs-title function_">curl_setopt</span>($ch,<span class="hljs-variable constant_">CURLOPT_SSLKEY</span>,$path_key);<br>      &#125;<br>      <span class="hljs-comment">// post提交方式</span><br>      <span class="hljs-title function_">curl_setopt</span>($ch, <span class="hljs-variable constant_">CURLOPT_POST</span>, <span class="hljs-variable constant_">TRUE</span>);<br>      <span class="hljs-title function_">curl_setopt</span>($ch, <span class="hljs-variable constant_">CURLOPT_POSTFIELDS</span>, $xml_data);<br>      <span class="hljs-comment">// 运行curl</span><br>      $xml = <span class="hljs-title function_">curl_exec</span>($ch);<br><span class="hljs-comment">//         返回结果0的时候能只能表明程序是正常返回不一定说明退款成功而已</span><br>      <span class="hljs-keyword">if</span>($xml)&#123;<br>          <span class="hljs-title function_">curl_close</span>($ch);<br>          <span class="hljs-comment">// 把xml转化成数组</span><br>          <span class="hljs-title function_">libxml_disable_entity_loader</span>(<span class="hljs-literal">true</span>);<br>          $array_data = <span class="hljs-title class_">FromXml</span>($xml);<br>          $order_sn = $array_data[<span class="hljs-string">&#x27;out_trade_no&#x27;</span>];   <span class="hljs-comment">//根据返回数据中的订单号查询订单更改订单状态</span><br>          $res_shipping = <span class="hljs-attr">DB</span>::<span class="hljs-title function_">table</span>(<span class="hljs-string">&#x27;ecs_order_info&#x27;</span>)-&gt;<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;order_sn&#x27;</span>,$order_sn)-&gt;<span class="hljs-title function_">update</span>([<span class="hljs-string">&#x27;shipping_status&#x27;</span> =&gt; <span class="hljs-number">6</span>]);   <span class="hljs-comment">//更改状态  退货已完成</span><br>          $res_return = <span class="hljs-attr">DB</span>::<span class="hljs-title function_">table</span>(<span class="hljs-string">&#x27;return_goods&#x27;</span>)-&gt;<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;order_sn&#x27;</span>,$order_sn)-&gt;<span class="hljs-title function_">update</span>([<span class="hljs-string">&#x27;return_status&#x27;</span> =&gt; <span class="hljs-number">1</span>]);   <span class="hljs-comment">//更改退货表</span><br>          <span class="hljs-keyword">if</span>($res_shipping &amp;&amp; $res_return)&#123;<br>              $result[<span class="hljs-string">&#x27;sucNum&#x27;</span>] = <span class="hljs-number">1</span>;    <span class="hljs-comment">//更改状态成功</span><br>              <span class="hljs-keyword">return</span> $result;<br>          &#125;<span class="hljs-keyword">else</span>&#123;<br>              $result[<span class="hljs-string">&#x27;sucNum&#x27;</span>] = <span class="hljs-number">2</span>;    <span class="hljs-comment">//更改状态失败</span><br>              <span class="hljs-keyword">return</span> $result;<br>          &#125;<br>      &#125;<span class="hljs-keyword">else</span>&#123;<br>          $error = <span class="hljs-title function_">curl_errno</span>($ch);<br>          <span class="hljs-title function_">curl_close</span>($ch);<br>          <span class="hljs-comment">// 错误的时候返回错误码。</span><br>          $result[<span class="hljs-string">&#x27;errNum&#x27;</span>] = $error;<br>          <span class="hljs-keyword">return</span> $result;<br>      &#125;<br>  &#125;<br></code></pre></td></tr></table></figure>
+<h6 id="xml转array函数"><a href="#xml转array函数" class="headerlink" title="xml转array函数"></a>xml转array函数</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 将xml转为array</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> string $xml</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@throws</span> <span class="hljs-variable">WxPayException</span></span><br><span class="hljs-comment"> */</span><br>public <span class="hljs-keyword">static</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">FromXml</span>(<span class="hljs-params">$xml</span>)<br>&#123;<br>    <span class="hljs-keyword">if</span>(!$xml)&#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">WxPayException</span>(<span class="hljs-string">&quot;xml数据异常！&quot;</span>);<br>    &#125;<br>    <span class="hljs-comment">//将XML转为array</span><br>    <span class="hljs-comment">//禁止引用外部xml实体</span><br>    <span class="hljs-title function_">libxml_disable_entity_loader</span>(<span class="hljs-literal">true</span>);<br>    $values = <span class="hljs-title function_">json_decode</span>(<span class="hljs-title function_">json_encode</span>(<span class="hljs-title function_">simplexml_load_string</span>($xml, <span class="hljs-string">&#x27;SimpleXMLElement&#x27;</span>, <span class="hljs-variable constant_">LIBXML_NOCDATA</span>)), <span class="hljs-literal">true</span>);<br>    <span class="hljs-keyword">return</span> $values;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="category-chain-item">开发笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Wechat-Pay/">#Wechat Pay</a>
+      
+        <a href="/tags/Wechat/">#Wechat</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>微信小程序中的微信支付-申请退款</div>
+      <div>https://qiufeng5life.github.io/2017/05/05/微信小程序中的微信支付-申请退款/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>andrew</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2017年5月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/05/05/Laravel%E4%B8%AD%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" title="Laravel中解决跨域问题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Laravel中解决跨域问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/04/27/%E5%88%A9%E7%94%A8Laravel%E8%87%AA%E5%B8%A6%E7%9A%84Auth%E5%AE%8C%E6%88%90%E7%94%A8%E6%88%B7%E9%AA%8C%E8%AF%81%E4%BB%A5%E5%8F%8A%E9%80%9A%E8%BF%87SendCloud%E5%AE%8C%E6%88%90%E9%82%AE%E7%AE%B1%E9%AA%8C%E8%AF%81/" title="利用Laravel自带的Auth完成用户验证以及通过SendCloud完成邮箱验证">
+                        <span class="hidden-mobile">利用Laravel自带的Auth完成用户验证以及通过SendCloud完成邮箱验证</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

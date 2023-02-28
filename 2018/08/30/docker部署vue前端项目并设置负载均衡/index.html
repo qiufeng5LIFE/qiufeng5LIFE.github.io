@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="andrew">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="docker 环境准备">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker部署vue前端项目并设置负载均衡">
+<meta property="og:url" content="https://qiufeng5life.github.io/2018/08/30/docker%E9%83%A8%E7%BD%B2vue%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%B9%B6%E8%AE%BE%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html">
+<meta property="og:site_name" content="Drew Blog">
+<meta property="og:description" content="docker 环境准备">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/StockSnap_VTDSKKSBWH.jpg">
+<meta property="article:published_time" content="2018-08-30T06:13:34.000Z">
+<meta property="article:modified_time" content="2023-02-28T03:40:49.068Z">
+<meta property="article:author" content="andrew">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/StockSnap_VTDSKKSBWH.jpg">
+  
+  
+  
+  <title>docker部署vue前端项目并设置负载均衡 - Drew Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qiufeng5life.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Drew Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="docker部署vue前端项目并设置负载均衡"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-08-30 14:13" pubdate>
+          2018年8月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">docker部署vue前端项目并设置负载均衡</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://drewlife.oss-cn-shanghai.aliyuncs.com/StockSnap_VTDSKKSBWH.jpg" srcset="/img/loading.gif" lazyload></p>
+<h5 id="docker-环境准备"><a href="#docker-环境准备" class="headerlink" title="docker 环境准备"></a>docker 环境准备</h5><span id="more"></span>
+
+<ul>
+<li><p>之前用spring-boot开发的项目都是将前端项目作为静态资源放在static下，最后一起打<br>成war包部署在tomcat中。这样灵活度很低，也失去了前后端分离的意义。spring-boot可以<br>单独打成jar包，用内置的tomcat直接启动服务，而前端项目则可以直接部署在docker中。</p>
+</li>
+<li><p>安装docker</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># step 1: 安装必要的一些系统工具</span><br>sudo yum install -y yum-utils device-mapper-persistent-data lvm2<br><span class="hljs-comment"># Step 2: 添加软件源信息</span><br>sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo<br><span class="hljs-comment"># Step 3: 更新并安装Docker-CE</span><br>sudo yum makecache fast<br>sudo yum -y install docker-ce<br><span class="hljs-comment"># Step 4: 开启Docker服务</span><br>sudo service docker start<br><span class="hljs-comment"># 检查docker安装是否正常</span><br>docker version<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>拉去nginx镜像(直接从网易镜像中心拉取速度会快些)<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">docker</span> <span class="hljs-string">pull hub.c.163.com/public/nginx:1.2.1</span><br></code></pre></td></tr></table></figure>
+闲名字太长可以打个标签<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker tag hub.c.163.com/public/nginx:1.2.1 nginx<br><span class="hljs-comment">#docker images 查看会有两个镜像，可以删除名字长的那个了</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="部署前端项目"><a href="#部署前端项目" class="headerlink" title="部署前端项目"></a>部署前端项目</h5><p>我们前端项目打算部署3个冗余节点，然后再部署一个nginx作为负载均衡服务器，前端<br>项目打包后只有一个入口文件和几个样式文件js文件，用docker部署的时候只需要将这些<br>文件映射到docker容器中，还需要准备相应的nginx配置文件映射到容器中。</p>
+<ul>
+<li>在&#x2F;home路径下新建三个文件夹f1,f2,f3,以f1为例部署第一个节点</li>
+<li>在f1下新建vue文件夹，将前端打包项目上传到vue文件夹中</li>
+<li>在f1下新建nginx.conf配置文件(内容如下)<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#设置root权限，需要映射nginx.conf配置文件,权限不足无法启动</span><br>user  root root;<br>worker_processes  1;<br><br>error_log  /var/log/nginx/error.log warn;<br>pid        /var/run/nginx.pid;<br><br><br>events &#123;<br>    worker_connections  1024;<br>&#125;<br><br><br>http &#123;<br>    include       /etc/nginx/mime.types;<br>    default_type  application/octet-stream;<br><br>    log_format  main  <span class="hljs-string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br>                      <span class="hljs-string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br>                      <span class="hljs-string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span>;<br><br>    access_log  /var/log/nginx/access.log  main;<br><br>    sendfile        on;<br>    <span class="hljs-comment">#tcp_nopush     on;</span><br><br>    keepalive_timeout  65;<br><br>    <span class="hljs-comment">#gzip  on;</span><br>	<br>	proxy_redirect          off;<br>	proxy_set_header        Host <span class="hljs-variable">$host</span>;<br>	proxy_set_header        X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>	proxy_set_header        X-Forwarded-For <span class="hljs-variable">$proxy_add_x_forwarded_for</span>;<br>	client_max_body_size    10m;<br>	client_body_buffer_size   128k;<br>	proxy_connect_timeout   5s;<br>	proxy_send_timeout      5s;<br>	proxy_read_timeout      5s;<br>	proxy_buffer_size        4k;<br>	proxy_buffers           4 32k;<br>	proxy_busy_buffers_size  64k;<br>	proxy_temp_file_write_size 64k;<br>	<br>	server &#123;<br><span class="hljs-comment">#抛出一个端口</span><br>		listen 6501;<br><span class="hljs-comment">#设置服务器域名</span><br>		server_name  192.168.88.60;<br>		location  /  &#123;<br><span class="hljs-comment">#设置项目目录</span><br>			root  /home/f1/vue;<br>			index  index.html;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>创建容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"> docker run -it -d -p 6501:6501 --name f1 -v /home/f1/nginx.conf:/etc/nginx/nginx.conf -v /home/fn1/vue:/home/f1/vue --privileged nginx<br><span class="hljs-comment"># -v /home/f1/nginx.conf:/etc/nginx/nginx.conf  将f1下的nginx.conf映射的容器中的nginx目录下</span><br><span class="hljs-comment"># -v /home/f1/vue:/home/f1/vue 映射项目目录，我这里本地目录和容器目录一致</span><br><span class="hljs-comment"># --privileged  给权限</span><br></code></pre></td></tr></table></figure></li>
+<li>创建另外两个f2,f3节点，配置文件只需更改listen端口和root目录<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#f2</span><br>server &#123;<br><span class="hljs-comment">#抛出一个端口</span><br>		listen 6502;<br><span class="hljs-comment">#设置服务器域名</span><br>		server_name  192.168.88.60;<br>		location  /  &#123;<br><span class="hljs-comment">#设置项目目录</span><br>			root  /home/f2/vue;<br>			index  index.html;<br>		&#125;<br>	&#125;<br><span class="hljs-comment">#f3</span><br>server &#123;<br><span class="hljs-comment">#抛出一个端口</span><br>		listen 6503;<br><span class="hljs-comment">#设置服务器域名</span><br>		server_name  192.168.88.60;<br>		location  /  &#123;<br><span class="hljs-comment">#设置项目目录</span><br>			root  /home/f3/vue;<br>			index  index.html;<br>		&#125;<br>	&#125;<br></code></pre></td></tr></table></figure></li>
+<li>f2,f3创建容器命令，记得将配置文件个项目都上传到相应的文件下<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#f2</span><br>docker run -it -d -p 6502:6502 --name f2 -v /home/f2/nginx.conf:/etc/nginx/nginx.conf -v /home/fn2/vue:/home/f2/vue --privileged nginx<br><span class="hljs-comment">#f3</span><br>docker run -it -d -p 6503:6503 --name f3 -v /home/f3/nginx.conf:/etc/nginx/nginx.conf -v /home/fn3/vue:/home/f3/vue --privileged nginx<br></code></pre></td></tr></table></figure></li>
+<li>查看启动容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps <br><span class="hljs-comment">#此时应该有三个容器启动</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="创建负载均衡nginx容器"><a href="#创建负载均衡nginx容器" class="headerlink" title="创建负载均衡nginx容器"></a>创建负载均衡nginx容器</h5><ul>
+<li>只需要创建一个nginx.conf配置文件映射到容器，主要设置都在配置文件中</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs bash">user  nginx;<br>worker_processes  1;<br><br>error_log  /var/log/nginx/error.log warn;<br>pid        /var/run/nginx.pid;<br><br><br>events &#123;<br>    worker_connections  1024;<br>&#125;<br><br><br>http &#123;<br>    include       /etc/nginx/mime.types;<br>    default_type  application/octet-stream;<br><br>    log_format  main  <span class="hljs-string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br>                      <span class="hljs-string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br>                      <span class="hljs-string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span>;<br><br>    access_log  /var/log/nginx/access.log  main;<br><br>    sendfile        on;<br>    <span class="hljs-comment">#tcp_nopush     on;</span><br><br>    keepalive_timeout  65;<br><br>    <span class="hljs-comment">#gzip  on;</span><br>	<br>	proxy_redirect          off;<br>	proxy_set_header        Host <span class="hljs-variable">$host</span>;<br>	proxy_set_header        X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>	proxy_set_header        X-Forwarded-For <span class="hljs-variable">$proxy_add_x_forwarded_for</span>;<br>	client_max_body_size    10m;<br>	client_body_buffer_size   128k;<br>	proxy_connect_timeout   5s;<br>	proxy_send_timeout      5s;<br>	proxy_read_timeout      5s;<br>	proxy_buffer_size        4k;<br>	proxy_buffers           4 32k;<br>	proxy_busy_buffers_size  64k;<br>	proxy_temp_file_write_size 64k;<br><br><span class="hljs-comment">#主要负载均衡配置</span><br>	upstream fn &#123;<br>		server 192.168.88.60:6501;<br>		server 192.168.88.60:6502;<br>		server 192.168.88.60:6503;<br>	&#125;<br>	server &#123;<br>        listen       6601;<br>        server_name  192.168.88.60; <br>        location / &#123;  <br>            proxy_pass   http://fn;<br>            index  index.html index.htm;  <br>        &#125;  <br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>启动负载均衡容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -it -d -p 8080:6601 --name ff1 -v /home/ff1/nginx.conf:/etc/nginx/nginx.conf  --privileged nginx<br></code></pre></td></tr></table></figure></li>
+<li>此时访问192.168.88.60:8080会将请求分发到6501,6502,6503三个端口中<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#可以执行 docker pause f1 f2 暂停掉f1 f2节点看访问是否正常</span><br><span class="hljs-comment"># 可以暂停任意节点节点检验，或者暂停掉三个节点看是否能访问</span><br><span class="hljs-comment"># docker unpause f1 启动暂停节点</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="category-chain-item">开发笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Docker/">#Docker</a>
+      
+        <a href="/tags/Vue/">#Vue</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>docker部署vue前端项目并设置负载均衡</div>
+      <div>https://qiufeng5life.github.io/2018/08/30/docker部署vue前端项目并设置负载均衡/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>andrew</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年8月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/09/26/%E6%9E%84%E5%BB%BAtomcat-docker%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83%E9%95%9C%E5%83%8F/" title="构建tomcat-docker部署环境镜像">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">构建tomcat-docker部署环境镜像</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/07/12/spring-boot-%E5%A4%9A%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91%E5%92%8Cdocker%E9%83%A8%E7%BD%B2/" title="spring boot 多模块开发和使用docker部署">
+                        <span class="hidden-mobile">spring boot 多模块开发和使用docker部署</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

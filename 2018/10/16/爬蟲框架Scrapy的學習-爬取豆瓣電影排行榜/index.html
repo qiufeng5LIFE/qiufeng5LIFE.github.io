@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="andrew">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="运行环境准备（Windows 10）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬蟲框架Scrapy的學習--爬取豆瓣電影排行榜">
+<meta property="og:url" content="https://qiufeng5life.github.io/2018/10/16/%E7%88%AC%E8%9F%B2%E6%A1%86%E6%9E%B6Scrapy%E7%9A%84%E5%AD%B8%E7%BF%92-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E9%9B%BB%E5%BD%B1%E6%8E%92%E8%A1%8C%E6%A6%9C/index.html">
+<meta property="og:site_name" content="Drew Blog">
+<meta property="og:description" content="运行环境准备（Windows 10）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/lishangan.jpg">
+<meta property="article:published_time" content="2018-10-16T05:13:53.000Z">
+<meta property="article:modified_time" content="2023-02-28T03:39:51.247Z">
+<meta property="article:author" content="andrew">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Scrapy">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://drewlife.oss-cn-shanghai.aliyuncs.com/lishangan.jpg">
+  
+  
+  
+  <title>爬蟲框架Scrapy的學習--爬取豆瓣電影排行榜 - Drew Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qiufeng5life.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Drew Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="爬蟲框架Scrapy的學習--爬取豆瓣電影排行榜"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-10-16 13:13" pubdate>
+          2018年10月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">爬蟲框架Scrapy的學習--爬取豆瓣電影排行榜</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://drewlife.oss-cn-shanghai.aliyuncs.com/lishangan.jpg" srcset="/img/loading.gif" lazyload></p>
+<h5 id="运行环境准备（Windows-10）"><a href="#运行环境准备（Windows-10）" class="headerlink" title="运行环境准备（Windows 10）"></a>运行环境准备（Windows 10）</h5><span id="more"></span>
+<ul>
+<li>安装python环境，直接在python.org官网下载相应的版本，注意安装时勾选安装pip选项，勾选添加环境变量</li>
+<li>环境校验  在cmd中执行</li>
+</ul>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs livescript"><span class="hljs-comment"># λ 是我本地cmd标识</span><br>λ python -V<br>Python <span class="hljs-number">3.7</span>.<span class="hljs-number">0</span><br><span class="hljs-comment"># 如果安装的是python 2.x版本 执行  pip -V, </span><br><span class="hljs-comment"># python 3.x 执行 pip3 -V</span><br>λ pip3 -V<br>pip <span class="hljs-number">18.1</span> <span class="hljs-keyword">from</span> f:<span class="hljs-string">\python\lib\site-packages\pip</span> (python <span class="hljs-number">3.7</span>)<br><span class="hljs-comment"># 若不能正常返回 首先检验是否添加了环境变量，确保安装时勾选pip模块</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>安装scrapy框架</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">pip3 <span class="hljs-keyword">install</span> scrapy<br></code></pre></td></tr></table></figure>
+<ul>
+<li>如果报 Microsoft Visual C++ 14.0 is required 安装错误</li>
+</ul>
+<ol>
+<li>到<a target="_blank" rel="noopener" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted">teisted</a>网站下载自己相应版本的whl文件<br>cp后面是python版本，amd64代表64位,注意自己安装的python是32位的还是64位的</li>
+<li>cmd切换到下载的whl文件目录执行<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">pip3</span> <span class="hljs-string">install Twisted‑18.9.0‑cp37‑cp37m‑win32.whl</span><br></code></pre></td></tr></table></figure></li>
+<li>再次执行 pip3 install scrapy</li>
+</ol>
+<ul>
+<li>查看scrapy安装是否正常<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">λ</span> <span class="hljs-string">scrapy -V</span><br><span class="hljs-attr">Scrapy</span> <span class="hljs-string">1.5.1 - no active project</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h5><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">scrapy</span> <span class="hljs-string">startproject douban</span><br><span class="hljs-comment"># cmd进入spriders目录生成spider文件</span><br><span class="hljs-attr">scrapy</span> <span class="hljs-string">genspider douban_spider movie.douban.com</span><br><span class="hljs-comment"># movie.douban.com 是要抓取网站的域名</span><br></code></pre></td></tr></table></figure>
+<h5 id="定义抓取目标"><a href="#定义抓取目标" class="headerlink" title="定义抓取目标"></a>定义抓取目标</h5><p>在items.py中定义一下内容</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DoubanItem</span>(scrapy.Item):<br>    <span class="hljs-comment"># define the fields for your item here like:</span><br>    <span class="hljs-comment"># name = scrapy.Field()</span><br>    <span class="hljs-comment"># 序号</span><br>    serial_number = scrapy.Field()<br>    <span class="hljs-comment"># 电影名称</span><br>    movie_name = scrapy.Field()<br>    <span class="hljs-comment"># 電影介紹</span><br>    introduce = scrapy.Field()<br>    <span class="hljs-comment"># 星级</span><br>    star = scrapy.Field()<br>    <span class="hljs-comment"># 评论数</span><br>    evaluate = scrapy.Field()<br>    <span class="hljs-comment"># 电影描述</span><br>    describe = scrapy.Field()<br>    <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+<h5 id="爬虫文件的编写-douban-spider-py"><a href="#爬虫文件的编写-douban-spider-py" class="headerlink" title="爬虫文件的编写 douban_spider.py"></a>爬虫文件的编写 douban_spider.py</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><span class="hljs-keyword">import</span> scrapy<br><span class="hljs-keyword">from</span> douban.items <span class="hljs-keyword">import</span> DoubanItem<br><br><span class="hljs-comment"># 注意头部引用定义的item</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DoubanSpiderSpider</span>(scrapy.Spider):<br>    <span class="hljs-comment"># 爬虫名</span><br>    name = <span class="hljs-string">&#x27;douban_spider&#x27;</span><br>    <span class="hljs-comment"># 允许的域名</span><br>    allowed_domains = [<span class="hljs-string">&#x27;movie.douban.com&#x27;</span>]<br>    <span class="hljs-comment"># 入口url</span><br>    start_urls = [<span class="hljs-string">&#x27;https://movie.douban.com/top250&#x27;</span>]<br><br><br>    <span class="hljs-comment"># 默认的解析方法</span><br>    <span class="hljs-comment"># 其中最主要的是xapth规则</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">parse</span>(<span class="hljs-params">self, response</span>):<br>        move_list = response.xpath(<span class="hljs-string">&quot;//div[@class=&#x27;article&#x27;]//ol[@class=&#x27;grid_view&#x27;]//li&quot;</span>)<br>        <span class="hljs-keyword">for</span> i_item <span class="hljs-keyword">in</span> move_list:<br>            douban_item = DoubanItem()<br>            douban_item[<span class="hljs-string">&#x27;serial_number&#x27;</span>] = i_item.xpath(<span class="hljs-string">&quot;.//div[@class=&#x27;item&#x27;]//em/text()&quot;</span>).extract_first()<br>            <span class="hljs-comment"># extract_first() 拿到第一个数据</span><br>            <span class="hljs-comment"># 注意循环内的xpath规则头部的 . ，他表示此xapth规则会拼接在循环外的xpath规则之后</span><br>            douban_item[<span class="hljs-string">&#x27;movie_name&#x27;</span>] = i_item.xpath(<span class="hljs-string">&quot;.//div[@class=&#x27;info&#x27;]//div[@class=&#x27;hd&#x27;]//a//span[1]/text()&quot;</span>).extract_first()<br>            content =  i_item.xpath(<span class="hljs-string">&quot;.//div[@class=&#x27;info&#x27;]//div[@class=&#x27;bd&#x27;]//p[1]/text()&quot;</span>).extract()<br>            <span class="hljs-comment"># 拿到的数据带有空格和换行，处理掉这些空格</span><br>            <span class="hljs-keyword">for</span> i_content <span class="hljs-keyword">in</span> content:<br>                content_s = <span class="hljs-string">&quot;&quot;</span>.join(i_content.split())<br>                douban_item[<span class="hljs-string">&#x27;introduce&#x27;</span>] = content_s<br>            douban_item[<span class="hljs-string">&#x27;star&#x27;</span>] = i_item.xpath(<span class="hljs-string">&quot;.//span[@class=&#x27;rating_num&#x27;]//text()&quot;</span>).extract_first()<br>            douban_item[<span class="hljs-string">&#x27;evaluate&#x27;</span>] = i_item.xpath(<span class="hljs-string">&quot;.//div[@class=&#x27;star&#x27;]//span[4]/text()&quot;</span>).extract_first()<br>            douban_item[<span class="hljs-string">&#x27;describe&#x27;</span>] = i_item.xpath(<span class="hljs-string">&quot;.//p[@class=&#x27;quote&#x27;]//span/text()&quot;</span>).extract_first()<br>            <span class="hljs-keyword">yield</span> douban_item<br>        <span class="hljs-comment"># 解析下一页规则</span><br>        next_link = response.xpath(<span class="hljs-string">&quot;//span[@class=&#x27;next&#x27;]/link/@href&quot;</span>).extract()<br>        <span class="hljs-keyword">if</span> next_link:<br>            next_link = next_link[<span class="hljs-number">0</span>]<br>            <span class="hljs-keyword">yield</span> scrapy.Request(<span class="hljs-string">&quot;https://movie.douban.com/top250&quot;</span> + next_link,callback=self.parse)<br><br></code></pre></td></tr></table></figure>
+<h5 id="user-agent设置"><a href="#user-agent设置" class="headerlink" title="user-agent设置"></a>user-agent设置</h5><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-comment"># seetings.py中打开注释  设置user-agent</span><br><span class="hljs-attr">USER_AGENT</span> = <span class="hljs-string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36&#x27;</span><br></code></pre></td></tr></table></figure>
+<h5 id="创建执行文件"><a href="#创建执行文件" class="headerlink" title="创建执行文件"></a>创建执行文件</h5><p>在seetings.py同级目录下创建mian.py文件</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">from</span> <span class="hljs-string">scrapy import cmdline</span><br><span class="hljs-attr">cmdline.execute(&#x27;scrapy</span> <span class="hljs-string">crawl douban_spider&#x27;.split())</span><br></code></pre></td></tr></table></figure>
+<h5 id="执行爬虫项目"><a href="#执行爬虫项目" class="headerlink" title="执行爬虫项目"></a>执行爬虫项目</h5><ul>
+<li><p>直接执行mian.py文件</p>
+</li>
+<li><p>在cmd执行</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">scrapy</span> <span class="hljs-string">crawl douabn_spider</span><br><span class="hljs-comment"># 正常会输出爬虫信息和解析后的爬去文件 如：</span><br><span class="hljs-attr">...</span><br><span class="hljs-attr">2018-10-16</span> <span class="hljs-string">14:29:53 [scrapy.core.scraper] DEBUG: Scraped from &lt;200 https://movie.douban.com/top250?start=225&amp;filter=&gt;</span><br><span class="hljs-attr">&#123;&#x27;describe&#x27;</span>: <span class="hljs-string">&#x27;青春的窃窃私语。 &#x27;,</span><br> <span class="hljs-attr">&#x27;evaluate&#x27;</span>: <span class="hljs-string">&#x27;292506人评价&#x27;,</span><br> <span class="hljs-attr">&#x27;introduce&#x27;</span>: <span class="hljs-string">&#x27;2002/台湾法国/剧情爱情同性&#x27;,</span><br> <span class="hljs-attr">&#x27;movie_name&#x27;</span>: <span class="hljs-string">&#x27;蓝色大门&#x27;,</span><br> <span class="hljs-attr">&#x27;serial_number&#x27;</span>: <span class="hljs-string">&#x27;250&#x27;,</span><br> <span class="hljs-attr">&#x27;star&#x27;</span>: <span class="hljs-string">&#x27;8.3&#x27;&#125;</span><br><span class="hljs-attr">2018-10-16</span> <span class="hljs-string">14:29:53 [scrapy.core.engine] INFO: Closing spider (finished)</span><br><span class="hljs-attr">...</span><br><br></code></pre></td></tr></table></figure>
+<h5 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h5><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-comment">#在cmd执行 注意一定要在项目目录</span><br><span class="hljs-attr">scrapy</span> <span class="hljs-string">crawl douabn_spider -o douban.json</span><br><span class="hljs-attr">scrapy</span> <span class="hljs-string">crawl douabn_spider -o douban.csv</span><br><span class="hljs-comment">#csv格式打开可能出现乱码，可先用编辑器打开将编码格式改为UTF-8-BOM</span><br></code></pre></td></tr></table></figure>
+<h5 id="保存到MongoDB中"><a href="#保存到MongoDB中" class="headerlink" title="保存到MongoDB中"></a>保存到MongoDB中</h5><ul>
+<li><p>在seetings.py中定义数据库连接变量</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">mongo_host</span> = <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br><span class="hljs-attr">mongoo_port</span> = <span class="hljs-string">27017</span><br><span class="hljs-attr">mongo_db_name</span> = <span class="hljs-string">&#x27;douban&#x27;</span><br><span class="hljs-attr">mongo_db_collection</span> = <span class="hljs-string">&#x27;douban_movie&#x27;</span><br></code></pre></td></tr></table></figure></li>
+<li><p>在pipelines.py中编写导入代码</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><span class="hljs-keyword">import</span> pymongo<br><span class="hljs-keyword">from</span> douban.settings <span class="hljs-keyword">import</span> mongo_host,mongo_db_name,mongoo_port,mongo_db_collection<br><span class="hljs-comment">#导入定义的数据库连接变量</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DoubanPipeline</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        host = mongo_host<br>        port = mongoo_port<br>        dbname = mongo_db_name<br>        sheetname = mongo_db_collection<br>        client = pymongo.MongoClient(host=host,port=port)<br>        mydb = client[dbname]<br>        self.post=mydb[sheetname]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_item</span>(<span class="hljs-params">self, item, spider</span>):<br>        data = <span class="hljs-built_in">dict</span>(item)<br>        self.post.insert(data)<br>        <span class="hljs-keyword">return</span> item<br>        <br><span class="hljs-comment"># 环境中pymongo不存在时安装即可  pip3 install pymongo</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>在seetings.py中开启pipelines</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># 只有开启此选项数据才会保存到数据库</span><br>ITEM_PIPELINES = &#123;<br>   <span class="hljs-string">&#x27;douban.pipelines.DoubanPipeline&#x27;</span>: <span class="hljs-number">300</span>,<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="保存到mysql中"><a href="#保存到mysql中" class="headerlink" title="保存到mysql中"></a>保存到mysql中</h5><ul>
+<li>在seetings.py中定义数据库连接变量<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">mysql_host</span> = <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br><span class="hljs-attr">mysql_port</span> = <span class="hljs-string">3306</span><br><span class="hljs-attr">mysql_db_name</span> = <span class="hljs-string">&#x27;douban&#x27;</span><br><span class="hljs-attr">mysql_user</span> = <span class="hljs-string">&#x27;root&#x27;</span><br><span class="hljs-attr">mysql_passwd</span> = <span class="hljs-string">&#x27;root&#x27;</span><br><br></code></pre></td></tr></table></figure></li>
+<li>在pipelines.py中编写导入代码<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> pymysql.cursors<br><span class="hljs-keyword">from</span> douban.settings <span class="hljs-keyword">import</span> mysql_db_name,mysql_host,mysql_passwd,mysql_port,mysql_user<br><span class="hljs-comment"># pymysql 模块不存在安装即可 pip3 install pymysql</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MysqlPipeline</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.connect = pymysql.connect(<br>            host = mysql_host,<br>            port = mysql_port,<br>            db = mysql_db_name,<br>            user = mysql_user,<br>            passwd = mysql_passwd,<br>            charset = <span class="hljs-string">&#x27;utf8&#x27;</span>,<br>            use_unicode = <span class="hljs-literal">True</span><br>        )<br>        self.cursor = self.connect.cursor()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_item</span>(<span class="hljs-params">self, item, spider</span>):<br>        self.cursor.execute(<br>            <span class="hljs-string">&quot;&quot;&quot;insert into douban(serial_number,movie_name,introduce,star,evaluate,des)</span><br><span class="hljs-string">            value (%s,%s,%s,%s,%s,%s)&quot;&quot;&quot;</span>,<br>            [item[<span class="hljs-string">&#x27;serial_number&#x27;</span>],item[<span class="hljs-string">&#x27;movie_name&#x27;</span>],item[<span class="hljs-string">&#x27;introduce&#x27;</span>],item[<span class="hljs-string">&#x27;star&#x27;</span>],item[<span class="hljs-string">&#x27;evaluate&#x27;</span>],item[<span class="hljs-string">&#x27;describe&#x27;</span>]]<br>        )<br>        self.connect.commit()<br>        <span class="hljs-keyword">return</span> item<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h6><ol>
+<li>导入mysql时没法指定表名，默认为项目名称</li>
+<li>表要提前建好，注意如果字段类型错误也可能导致导入出错</li>
+<li>我在导入时字段describe一直出错，好像是关键字，我换成des可以正常那个导入</li>
+</ol>
+<ul>
+<li>在seetings.py中开启pipelines<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs py"> <span class="hljs-comment"># 只有开启此选项数据才会保存到数据库</span><br>ITEM_PIPELINES = &#123;<br>   <span class="hljs-comment"># &#x27;douban.pipelines.DoubanPipeline&#x27;: 300,</span><br>   <span class="hljs-string">&#x27;douban.pipelines.MysqlPipeline&#x27;</span>: <span class="hljs-number">300</span>,<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="设置代理ip"><a href="#设置代理ip" class="headerlink" title="设置代理ip"></a>设置代理ip</h5><ul>
+<li>在middlewares.py中创建代理类<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># 代理IP设置</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">my_proxy</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_request</span>(<span class="hljs-params">self,request,spider</span>):<br>        request.meta[<span class="hljs-string">&#x27;proxy&#x27;</span>] = <span class="hljs-string">&#x27;http-cla.abuyun.com:9030&#x27;</span><br>        proxy_name_pass = <span class="hljs-string">b&#x27;xxxxxxxxxxxxx:xxxxxxxxxxxx&#x27;</span><br>        <span class="hljs-comment"># b&#x27;用户名:密码&#x27;</span><br>        encode_pass_name = base64.b64decode(proxy_name_pass)<br>        request.headers[<span class="hljs-string">&#x27;Proxy-Authorization&#x27;</span>] = <span class="hljs-string">&#x27;Basic &#x27;</span> + encode_pass_name.decode()<br>        <span class="hljs-comment"># decode() 只有转成字符串才可以相加</span><br></code></pre></td></tr></table></figure></li>
+<li>将代理类添加到seetings.py中<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs py">DOWNLOADER_MIDDLEWARES = &#123;<br>   <span class="hljs-comment"># &#x27;douban.middlewares.DoubanDownloaderMiddleware&#x27;: 543,</span><br>    <span class="hljs-string">&#x27;douban.middlewares.my_proxy&#x27;</span>: <span class="hljs-number">543</span>,<br><span class="hljs-comment">#数字越小优先级越高</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="设置随机user-agent"><a href="#设置随机user-agent" class="headerlink" title="设置随机user-agent"></a>设置随机user-agent</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs py">- 在middlewares.py中新建类<br><span class="hljs-comment">#user-agent</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">my_useragent</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_request</span>(<span class="hljs-params">self,request,spider</span>):<br>        USER_AGENT_LIST = [<br>            <span class="hljs-string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 &quot;</span><br>            <span class="hljs-string">&quot;(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;</span>,<br>            <span class="hljs-string">&quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 &quot;</span><br>            <span class="hljs-string">&quot;(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;</span>,<br>            <span class="hljs-string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 &quot;</span><br>            <span class="hljs-string">&quot;(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;</span>,<br>            <span class="hljs-string">&quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 &quot;</span><br>            <span class="hljs-string">&quot;(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;</span>,<br>            <span class="hljs-string">&quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 &quot;</span><br>            <span class="hljs-string">&quot;(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;</span>,<br>            <span class="hljs-string">&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 &quot;</span><br>        ]<br>        agent = random.choice(USER_AGENT_LIST)<br>        request.headers[<span class="hljs-string">&#x27;User_Agent&#x27;</span>] = agent<br><span class="hljs-comment"># 记得导入random模块</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>将代理类添加到seetings.py中<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable constant_">DOWNLOADER_MIDDLEWARES</span> = &#123;<br>   # <span class="hljs-string">&#x27;douban.middlewares.DoubanDownloaderMiddleware&#x27;</span>: <span class="hljs-number">543</span>,<br>   <span class="hljs-string">&#x27;douban.middlewares.my_proxy&#x27;</span>: <span class="hljs-number">543</span>,<br>   <span class="hljs-string">&#x27;douban.middlewares.my_useragent&#x27;</span>: <span class="hljs-number">544</span>,<br>   #数字优先级不能相同<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="category-chain-item">开发笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/">#Python</a>
+      
+        <a href="/tags/Scrapy/">#Scrapy</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>爬蟲框架Scrapy的學習--爬取豆瓣電影排行榜</div>
+      <div>https://qiufeng5life.github.io/2018/10/16/爬蟲框架Scrapy的學習-爬取豆瓣電影排行榜/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>andrew</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年10月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/12/26/centos%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%88%86%E9%9B%A2%E9%A0%85%E7%9B%AE/" title="centos用docker-compose部署前後端分離項目">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">centos用docker-compose部署前後端分離項目</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/09/27/docker-mysql%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" title="docker mysql的备份与恢复">
+                        <span class="hidden-mobile">docker mysql的备份与恢复</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
