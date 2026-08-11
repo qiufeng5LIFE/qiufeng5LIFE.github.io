@@ -1,0 +1,212 @@
+[
+  {
+    "name": "老陈家擀面皮",
+    "longitude": 103.87070065682106,
+    "latitude": 36.0454128986876,
+    "category": "food"
+  },
+  {
+    "name": "伊兴面片",
+    "longitude": 103.81298975423752,
+    "latitude": 36.054026677735585,
+    "category": "food"
+  },
+  {
+    "name": "石臼湖",
+    "longitude": 118.87447357177736,
+    "latitude": 31.472595900460277,
+    "category": "scenic"
+  },
+  {
+    "name": "采石矶",
+    "longitude": 118.45373153686525,
+    "latitude": 31.6520662675925,
+    "category": "scenic"
+  },
+  {
+    "name": "金山公园",
+    "longitude": 119.40894126892091,
+    "latitude": 32.22129710831182,
+    "category": "scenic"
+  },
+  {
+    "name": "北固山",
+    "longitude": 119.45237159729005,
+    "latitude": 32.219263940160225,
+    "category": "scenic"
+  },
+  {
+    "name": "西湖",
+    "longitude": 120.14390945434572,
+    "latitude": 30.246389000387033,
+    "category": "scenic"
+  },
+  {
+    "name": "金鸡湖",
+    "longitude": 120.69442749023439,
+    "latitude": 31.31368158596767,
+    "category": "scenic"
+  },
+  {
+    "name": "大明湖",
+    "longitude": 117.0194149017334,
+    "latitude": 36.675165454590065,
+    "category": "scenic"
+  },
+  {
+    "name": "黑虎泉",
+    "longitude": 117.02764554449796,
+    "latitude": 36.66215741772664,
+    "category": "scenic"
+  },
+  {
+    "name": "越秀公园",
+    "longitude": 113.26022986816014,
+    "latitude": 23.142767605386428,
+    "category": "scenic"
+  },
+  {
+    "name": "紫泥堂",
+    "longitude": 113.27809799558608,
+    "latitude": 22.89471623505836,
+    "category": "scenic"
+  },
+  {
+    "name": "陈家祠",
+    "longitude": 113.2416062427304,
+    "latitude": 23.12973135586864,
+    "category": "scenic"
+  },
+  {
+    "name": "娘娘顶",
+    "longitude": 117.97088826859306,
+    "latitude": 32.049393723231965,
+    "category": "scenic"
+  },
+  {
+    "name": "华南植物园",
+    "longitude": 113.36163425392941,
+    "latitude": 23.18440043747028,
+    "category": "scenic"
+  },
+  {
+    "name": "滇池",
+    "longitude": 102.71341137319222,
+    "latitude": 24.915626331059983,
+    "category": "scenic"
+  },
+  {
+    "name": "翠湖公园",
+    "longitude": 102.7021966241323,
+    "latitude": 25.05140013268123,
+    "category": "scenic"
+  },
+  {
+    "name": "远见中心",
+    "longitude": 106.55076406257265,
+    "latitude": 29.568552323386943,
+    "category": "special"
+  },
+  {
+    "name": "小青年",
+    "longitude": 106.45822583366419,
+    "latitude": 29.55553885922539,
+    "category": "special"
+  },
+  {
+    "name": "长江索道",
+    "longitude": 106.58872422936857,
+    "latitude": 29.556170427983044,
+    "category": "scenic"
+  },
+  {
+    "name": "山城步道",
+    "longitude": 106.56301641002581,
+    "latitude": 29.553359675949956,
+    "category": "scenic"
+  },
+  {
+    "name": "大熊猫繁育基地",
+    "longitude": 104.13565713490448,
+    "latitude": 30.742963407232065,
+    "category": "scenic"
+  },
+  {
+    "name": "人民公园",
+    "longitude": 104.05515038099003,
+    "latitude": 30.659424942551325,
+    "category": "scenic"
+  },
+  {
+    "name": "旅朋青年旅社",
+    "longitude": 102.62941317022292,
+    "latitude": 34.0941524775731,
+    "category": "special"
+  },
+  {
+    "name": "HOME",
+    "longitude": 104.30878336481157,
+    "latitude": 35.0366963198119,
+    "category": "special"
+  },
+  {
+    "name": "安阳工学院",
+    "longitude": 114.34503845349846,
+    "latitude": 36.06583794173658,
+    "category": "special"
+  },
+  {
+    "name": "南浔古镇",
+    "longitude": 120.43530997932601,
+    "latitude": 30.882985900091334,
+    "category": "scenic"
+  },
+  {
+    "name": "个园",
+    "longitude": 119.43826735764806,
+    "latitude": 32.4010556623095,
+    "category": "scenic"
+  },
+  {
+    "name": "冶春茶社",
+    "longitude": 119.56833087036698,
+    "latitude": 32.418414339249146,
+    "category": "food"
+  },
+  {
+    "name": "方山",
+    "longitude": 118.8699245452881,
+    "latitude": 31.89789047697751,
+    "category": "scenic"
+  },
+  {
+    "name": "钟山",
+    "longitude": 118.85215759277345,
+    "latitude": 32.065701283676844,
+    "category": "scenic"
+  },
+  {
+    "name": "幕府山",
+    "longitude": 118.78812789916994,
+    "latitude": 32.1263432734569,
+    "category": "scenic"
+  },
+  {
+    "name": "玄武湖",
+    "longitude": 118.79241943359376,
+    "latitude": 32.07573834888284,
+    "category": "scenic"
+  },
+  {
+    "name": "莫愁湖",
+    "longitude": 118.75765800476074,
+    "latitude": 32.03802091632526,
+    "category": "scenic"
+  },
+  {
+    "name": "阅江楼",
+    "longitude": 118.74330612734165,
+    "latitude": 32.095901878130306,
+    "category": "scenic"
+  }
+]
