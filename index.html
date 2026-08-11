@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
     <link rel="stylesheet" href="./map.css" />
     <style>
-      .summary-item { display: inline-flex; align-items: center; gap: 5px; margin-left: 16px; white-space: nowrap; }
+      .summary-item { display: inline-flex; align-items: center; gap: 5px; margin-left: 16px; padding: 3px 0; border: 0; background: transparent; color: inherit; font: inherit; white-space: nowrap; cursor: pointer; transition: opacity .18s ease; }
+      .summary-item:hover { color: #334b3d; }
+      .summary-item:focus-visible { outline: 2px solid #5f9f83; outline-offset: 3px; border-radius: 3px; }
+      .summary-item.is-hidden { opacity: .35; }
+      .summary-item.is-hidden .summary-icon { filter: grayscale(1); box-shadow: none; }
       .summary-icon { display: inline-grid; place-items: center; width: 22px; height: 22px; flex: none; border-radius: 50%; color: white; box-shadow: 0 1px 4px #0002; }
       .summary-icon .marker-glyph { width: 13px; height: 13px; }
       .route-style-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 8px; padding: 3px; border-radius: 7px; background: #edf0ec; }
@@ -20,7 +24,10 @@
     </style>
   </head>
   <body>
-    <header><p id="summary">正在载入足迹…</p></header>
+    <header>
+      <strong class="site-title">TRACES OF LIFE</strong>
+      <p id="summary">正在载入足迹…</p>
+    </header>
     <main><div id="map" aria-label="足迹地图"></div><div id="error" hidden></div></main>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="./vendor/leaflet.hotline.min.js"></script>

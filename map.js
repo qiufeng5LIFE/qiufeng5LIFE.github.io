@@ -57,12 +57,35 @@ function bindRouteDetails(layer, item) {
 }
 
 let routeLayer;
+let placeLayer;
 let routeStyleMode = typeof L.hotline === 'function' ? 'speed' : 'color';
+const hiddenCategories = new Set();
+
+function addToCategoryGroup(parent, type, layer) {
+  let group = parent.categoryGroups.get(type);
+  if (!group) {
+    group = L.featureGroup();
+    parent.categoryGroups.set(type, group);
+    if (!hiddenCategories.has(type)) group.addTo(parent);
+  }
+  layer.addTo(group);
+}
+
+function setCategoryVisible(type, visible) {
+  [placeLayer, routeLayer].forEach((parent) => {
+    const group = parent?.categoryGroups?.get(type);
+    if (!group) return;
+    if (visible) group.addTo(parent);
+    else parent.removeLayer(group);
+  });
+}
 
 function createRouteLayer(routes, styleMode = routeStyleMode) {
   const group = L.featureGroup().addTo(map);
+  group.categoryGroups = new Map();
   routes.features.forEach((feature) => {
     const item = feature.properties || {};
+    const type = item.type || 'cycling';
     const coordinates = feature.geometry?.coordinates || [];
     const speeds = item.speedKmh || [];
     let layer;
@@ -89,7 +112,7 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
       });
     }
     bindRouteDetails(layer, item);
-    layer.addTo(group);
+    addToCategoryGroup(group, type, layer);
     if (coordinates.length) {
       const routeConfig = ROUTE_TYPE_CONFIG[item.type] || ROUTE_TYPE_CONFIG.cycling;
       const endpoints = [
@@ -104,7 +127,7 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
         });
         marker.bindTooltip(label);
         marker.bindPopup(`<div class="place-popup"><h3>${escapeHtml(label)}</h3><p>${escapeHtml(routeConfig.label)} · ${escapeHtml(item.distanceKm || 0)} 公里</p></div>`);
-        marker.addTo(group);
+        addToCategoryGroup(group, type, marker);
       });
     }
   });
@@ -151,14 +174,27 @@ function renderCategorySummary(places, routes) {
   [...Object.entries(PLACE_TYPE_CONFIG), ...Object.entries(ROUTE_TYPE_CONFIG)].forEach(([type, config]) => {
     const count = counts.get(type) || 0;
     if (!count) return;
-    const item = document.createElement('span');
+    const item = document.createElement('button');
+    item.type = 'button';
     item.className = 'summary-item';
+    item.dataset.category = type;
+    item.setAttribute('aria-pressed', 'true');
+    item.title = `点击隐藏${config.label}`;
     const iconElement = document.createElement('span');
     iconElement.className = 'summary-icon';
     iconElement.style.backgroundColor = config.color;
     iconElement.innerHTML = MARKER_ICONS[config.icon];
     item.append(iconElement);
     item.append(document.createTextNode(`${config.label} ${count}`));
+    item.addEventListener('click', () => {
+      const visible = hiddenCategories.has(type);
+      if (visible) hiddenCategories.delete(type);
+      else hiddenCategories.add(type);
+      setCategoryVisible(type, visible);
+      item.classList.toggle('is-hidden', !visible);
+      item.setAttribute('aria-pressed', String(visible));
+      item.title = `点击${visible ? '隐藏' : '显示'}${config.label}`;
+    });
     fragment.append(item);
   });
   summary.replaceChildren(fragment);
@@ -171,9 +207,12 @@ async function loadMapData() {
   if (!placesResponse.ok || !routesResponse.ok) throw new Error('地图数据暂时无法加载');
   const [places, routes] = await Promise.all([placesResponse.json(), routesResponse.json()]);
   routeLayer = createRouteLayer(routes, routeStyleMode);
-  const placeLayer = L.featureGroup(places.map((item) => {
+  placeLayer = L.featureGroup().addTo(map);
+  placeLayer.categoryGroups = new Map();
+  places.forEach((item) => {
+    const type = item.category || 'special';
     const marker = L.marker([item.latitude, item.longitude], {
-      icon: createMarkerIcon(item.category || 'special'),
+      icon: createMarkerIcon(type),
       title: item.name || '未命名地点',
     });
     marker.bindTooltip(escapeHtml(item.name || '未命名地点'), {
@@ -182,8 +221,8 @@ async function loadMapData() {
       opacity: 1,
       className: 'place-tooltip',
     });
-    return marker;
-  })).addTo(map);
+    addToCategoryGroup(placeLayer, type, marker);
+  });
   const all = L.featureGroup([routeLayer, placeLayer]);
   if (all.getBounds().isValid()) map.fitBounds(all.getBounds(), { padding: [36, 36] });
   addRouteStyleControl(routes);
