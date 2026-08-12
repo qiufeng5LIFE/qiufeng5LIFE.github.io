@@ -208,5 +208,101 @@
     "longitude": 118.74330612734165,
     "latitude": 32.095901878130306,
     "category": "scenic"
+  },
+  {
+    "name": "全椒太平古城",
+    "longitude": 118.260727022995,
+    "latitude": 32.10075555130811,
+    "category": "scenic"
+  },
+  {
+    "name": "烤匠",
+    "longitude": 104.06484883879463,
+    "latitude": 30.633836469276908,
+    "category": "food"
+  },
+  {
+    "name": "好榕意面馆",
+    "longitude": 118.79812127127282,
+    "latitude": 32.01495812500665,
+    "category": "food"
+  },
+  {
+    "name": "逆鳞",
+    "longitude": 118.76665341326368,
+    "latitude": 32.02821854698081,
+    "category": "food"
+  },
+  {
+    "name": "拾叁茶",
+    "longitude": 118.79051233379965,
+    "latitude": 32.0413251967329,
+    "category": "food"
+  },
+  {
+    "name": "月牙湖",
+    "longitude": 118.82288932800294,
+    "latitude": 32.03762074450574,
+    "category": "scenic"
+  },
+  {
+    "name": "白马公园",
+    "longitude": 118.81113052368165,
+    "latitude": 32.0598821907181,
+    "category": "scenic"
+  },
+  {
+    "name": "清凉山",
+    "longitude": 118.75559806823732,
+    "latitude": 32.05235318994451,
+    "category": "scenic"
+  },
+  {
+    "name": "午朝门公园",
+    "longitude": 118.8124179840088,
+    "latitude": 32.04040372139897,
+    "category": "scenic"
+  },
+  {
+    "name": "南京博物院",
+    "longitude": 118.81993794717931,
+    "latitude": 32.04292254117396,
+    "category": "scenic"
+  },
+  {
+    "name": "中山植物园",
+    "longitude": 118.8285541534424,
+    "latitude": 32.05660878824922,
+    "category": "scenic"
+  },
+  {
+    "name": "古林公园",
+    "longitude": 118.7481737136841,
+    "latitude": 32.0687925262318,
+    "category": "scenic"
+  },
+  {
+    "name": "绣球公园",
+    "longitude": 118.74049186706544,
+    "latitude": 32.09111910388372,
+    "category": "scenic"
+  },
+  {
+    "name": "谷里水库",
+    "longitude": 118.6959445024512,
+    "latitude": 31.844396933143532,
+    "category": "scenic"
+  },
+  {
+    "name": "鱼嘴",
+    "longitude": 118.65966081619264,
+    "latitude": 31.9767560954978,
+    "category": "scenic"
+  },
+  {
+    "name": "莲花湖公园",
+    "longitude": 118.65028381347658,
+    "latitude": 31.91013173797037,
+    "category": "scenic"
   }
 ]
