@@ -56,6 +56,54 @@ function bindRouteDetails(layer, item) {
   layer.bindPopup(`<div class="place-popup"><h3>${escapeHtml(item.name || '未命名轨迹')}</h3>${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}${item.distanceKm ? `<small>${escapeHtml(item.distanceKm)} 公里 · 累计爬升 ${escapeHtml(item.totalAscentMeters || 0)} 米</small>` : ''}</div>`);
 }
 
+function getRouteMidpoint(coordinates) {
+  if (!coordinates.length) return null;
+  if (coordinates.length === 1) return coordinates[0];
+  const distances = [];
+  let total = 0;
+  for (let index = 1; index < coordinates.length; index += 1) {
+    const [previousLongitude, previousLatitude] = coordinates[index - 1];
+    const [longitude, latitude] = coordinates[index];
+    const segment = map.distance([previousLatitude, previousLongitude], [latitude, longitude]);
+    distances.push(segment);
+    total += segment;
+  }
+  const target = total / 2;
+  let travelled = 0;
+  for (let index = 0; index < distances.length; index += 1) {
+    const segment = distances[index];
+    if (travelled + segment >= target) {
+      const ratio = segment ? (target - travelled) / segment : 0;
+      const [startLongitude, startLatitude] = coordinates[index];
+      const [endLongitude, endLatitude] = coordinates[index + 1];
+      return [
+        startLongitude + (endLongitude - startLongitude) * ratio,
+        startLatitude + (endLatitude - startLatitude) * ratio,
+      ];
+    }
+    travelled += segment;
+  }
+  return coordinates.at(-1);
+}
+
+function createDistanceMarker(coordinates, item, type) {
+  const midpoint = getRouteMidpoint(coordinates);
+  const distance = Number(item.distanceKm);
+  if (!midpoint || !Number.isFinite(distance) || distance <= 0) return null;
+  const config = ROUTE_TYPE_CONFIG[type] || ROUTE_TYPE_CONFIG.cycling;
+  const color = /^#[0-9a-f]{6}$/i.test(item.color || '') ? item.color : config.color;
+  const name = item.name || '未命名轨迹';
+  const label = `${name} · ${distance.toFixed(distance >= 100 ? 0 : 1)} km`;
+  const icon = L.divIcon({
+    className: 'route-distance-marker',
+    html: `<span style="--route-label-color:${color}">${escapeHtml(label)}</span>`,
+    iconSize: null,
+    iconAnchor: [0, 31],
+  });
+  const [longitude, latitude] = midpoint;
+  return L.marker([latitude, longitude], { icon, interactive: false, keyboard: false });
+}
+
 let routeLayer;
 let placeLayer;
 let routeStyleMode = typeof L.hotline === 'function' ? 'speed' : 'color';
@@ -114,6 +162,8 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
     bindRouteDetails(layer, item);
     addToCategoryGroup(group, type, layer);
     if (coordinates.length) {
+      const distanceMarker = createDistanceMarker(coordinates, item, type);
+      if (distanceMarker) addToCategoryGroup(group, type, distanceMarker);
       const routeConfig = ROUTE_TYPE_CONFIG[item.type] || ROUTE_TYPE_CONFIG.cycling;
       const endpoints = [
         { coordinate: coordinates[0], endpoint: 'start', label: `${item.name} · 起点` },

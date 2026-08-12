@@ -11,3 +11,39 @@
 .leaflet-control {
   font-family: "Unbounded", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
+
+.route-distance-marker {
+  width: 0 !important;
+  height: 0 !important;
+  border: 0;
+  background: transparent;
+}
+
+.route-distance-marker span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 7px 10px;
+  border-radius: 9px 9px 9px 2px;
+  background: var(--route-label-color, #2587c8);
+  box-shadow: 0 3px 10px #17271f38;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translate(-8px, -8px);
+}
+
+.route-distance-marker span::after {
+  position: absolute;
+  left: 6px;
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid var(--route-label-color, #2587c8);
+  border-right: 8px solid transparent;
+  content: "";
+  transform: rotate(6deg);
+  transform-origin: top left;
+}
