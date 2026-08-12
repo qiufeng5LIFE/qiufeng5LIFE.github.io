@@ -26,7 +26,7 @@ const ROUTE_TYPE_CONFIG = {
   hiking: { color: '#397b54', icon: 'hiking', label: '徒步' },
 };
 
-function createMarkerIcon(type, endpoint, compact = false) {
+function createMarkerIcon(type, endpoint, compact = false, routeColor) {
   if (!window.ExtraMarkers) return undefined;
   const routeConfig = ROUTE_TYPE_CONFIG[type];
   const placeConfig = PLACE_TYPE_CONFIG[type] || PLACE_TYPE_CONFIG.special;
@@ -38,12 +38,32 @@ function createMarkerIcon(type, endpoint, compact = false) {
     : isEndpoint ? window.ExtraMarkers.TackCirclePanel : window.ExtraMarkers.PinCirclePanel;
   return new window.ExtraMarkers.Icon({
     svg: shape,
-    color: endpoint === 'start' ? '#239b56' : endpoint === 'end' ? '#d64545' : config.color,
+    color: endpoint === 'start' && /^#[0-9a-f]{6}$/i.test(routeColor || '') ? routeColor
+      : endpoint === 'start' ? '#239b56'
+        : endpoint === 'end' ? '#d64545' : config.color,
     accentColor: isEndpoint || isRoute ? '#ffffff' : placeConfig.accentColor,
     contentColor: '#ffffff',
     contentHtml: MARKER_ICONS[config.icon],
     scale: compact ? 0.65 : isEndpoint ? 1.08 : 1,
     shadow: compact ? 'none' : 'drop',
+  });
+}
+
+function createFinishIcon() {
+  return L.divIcon({
+    className: 'route-finish-marker',
+    html: `<svg viewBox="0 0 38 42" aria-hidden="true">
+      <path class="finish-pole-outline" d="M11 34V7" />
+      <path class="finish-pole" d="M11 34V7" />
+      <path class="finish-flag" d="M12 7h20l-5 6 5 6H12z" />
+      <path class="finish-check" d="M12 7h5v6h-5zM22 7h5v6h-5zM17 13h5v6h-5zM27 13h5v6h-5z" />
+      <circle class="finish-dot-outline" cx="11" cy="34" r="7" />
+      <circle class="finish-dot" cx="11" cy="34" r="5" />
+    </svg>`,
+    iconSize: [38, 42],
+    iconAnchor: [11, 34],
+    tooltipAnchor: [7, -25],
+    popupAnchor: [7, -27],
   });
 }
 
@@ -172,7 +192,7 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
       endpoints.forEach(({ coordinate, endpoint, label }) => {
         const [longitude, latitude] = coordinate;
         const marker = L.marker([latitude, longitude], {
-          icon: createMarkerIcon(item.type, endpoint),
+          icon: endpoint === 'end' ? createFinishIcon() : createMarkerIcon(item.type, endpoint, false, item.color),
           title: label,
         });
         marker.bindTooltip(label);
