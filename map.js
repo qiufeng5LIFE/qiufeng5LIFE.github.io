@@ -72,7 +72,15 @@ function escapeHtml(value) {
 }
 
 function bindRouteDetails(layer, item) {
-  layer.bindTooltip(escapeHtml(item.name || '未命名轨迹'));
+  const distance = Number(item.distanceKm);
+  const distanceLabel = Number.isFinite(distance) && distance > 0 ? ` · ${distance.toFixed(distance >= 100 ? 0 : 1)} km` : '';
+  const color = /^#[0-9a-f]{6}$/i.test(item.color || '') ? item.color : '#2587c8';
+  layer.bindTooltip(`<span class="route-tooltip-content" style="--route-tooltip-color:${color}">${escapeHtml(item.name || '未命名轨迹')}${distanceLabel}</span>`, {
+    className: 'route-tooltip',
+    direction: 'top',
+    sticky: true,
+    opacity: 1,
+  });
   layer.bindPopup(`<div class="place-popup"><h3>${escapeHtml(item.name || '未命名轨迹')}</h3>${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}${item.distanceKm ? `<small>${escapeHtml(item.distanceKm)} 公里 · 累计爬升 ${escapeHtml(item.totalAscentMeters || 0)} 米</small>` : ''}</div>`);
 }
 
@@ -124,8 +132,29 @@ function createDistanceMarker(coordinates, item, type) {
   return L.marker([latitude, longitude], { icon, interactive: false, keyboard: false });
 }
 
+function createDirectionMarker(coordinates, item) {
+  if (coordinates.length < 2) return null;
+  const middleIndex = Math.max(1, Math.min(coordinates.length - 1, Math.floor(coordinates.length * 0.58)));
+  const [previousLongitude, previousLatitude] = coordinates[middleIndex - 1];
+  const [longitude, latitude] = coordinates[middleIndex];
+  const angle = Math.atan2(latitude - previousLatitude, longitude - previousLongitude) * 180 / Math.PI;
+  const color = /^#[0-9a-f]{6}$/i.test(item.color || '') ? item.color : '#2587c8';
+  return L.marker([latitude, longitude], {
+    interactive: false,
+    keyboard: false,
+    icon: L.divIcon({
+      className: 'route-direction-marker',
+      html: `<span style="--route-direction-color:${color};transform:rotate(${-angle}deg)">➜</span>`,
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+    }),
+  });
+}
+
 let routeLayer;
 let placeLayer;
+let selectedRouteId = null;
+const routeRecords = new Map();
 let routeStyleMode = typeof L.hotline === 'function' ? 'speed' : 'color';
 const hiddenCategories = new Set();
 
@@ -151,8 +180,10 @@ function setCategoryVisible(type, visible) {
 function createRouteLayer(routes, styleMode = routeStyleMode) {
   const group = L.featureGroup().addTo(map);
   group.categoryGroups = new Map();
+  routeRecords.clear();
   routes.features.forEach((feature) => {
     const item = feature.properties || {};
+    const routeId = feature.id || item.id || `${item.name}-${item.traveledAt || ''}`;
     const type = item.type || 'cycling';
     const coordinates = feature.geometry?.coordinates || [];
     const speeds = item.speedKmh || [];
@@ -181,9 +212,16 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
     }
     bindRouteDetails(layer, item);
     addToCategoryGroup(group, type, layer);
+    const detailLayers = [];
+    const highlightOutline = L.polyline(coordinates.map(([longitude, latitude]) => [latitude, longitude]), {
+      color: '#ffffff', weight: (styleMode === 'speed' ? 7 : Number(item.weight || 5)) + 7,
+      opacity: 0.9, interactive: false,
+    });
     if (coordinates.length) {
       const distanceMarker = createDistanceMarker(coordinates, item, type);
-      if (distanceMarker) addToCategoryGroup(group, type, distanceMarker);
+      if (distanceMarker) detailLayers.push(distanceMarker);
+      const directionMarker = createDirectionMarker(coordinates, item);
+      if (directionMarker) detailLayers.push(directionMarker);
       const routeConfig = ROUTE_TYPE_CONFIG[item.type] || ROUTE_TYPE_CONFIG.cycling;
       const endpoints = [
         { coordinate: coordinates[0], endpoint: 'start', label: `${item.name} · 起点` },
@@ -197,11 +235,65 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
         });
         marker.bindTooltip(label);
         marker.bindPopup(`<div class="place-popup"><h3>${escapeHtml(label)}</h3><p>${escapeHtml(routeConfig.label)} · ${escapeHtml(item.distanceKm || 0)} 公里</p></div>`);
-        addToCategoryGroup(group, type, marker);
+        detailLayers.push(marker);
       });
     }
+    const baseWeight = styleMode === 'speed' ? 7 : Number(item.weight || 5);
+    routeRecords.set(routeId, { id: routeId, type, item, layer, highlightOutline, detailLayers, baseWeight });
+    layer.on('click', (event) => {
+      L.DomEvent.stopPropagation(event.originalEvent);
+      selectRoute(routeId, true);
+    });
+    layer.on('mouseover', () => {
+      if (!selectedRouteId && typeof layer.setStyle === 'function') layer.setStyle({ opacity: 1, weight: baseWeight + 2 });
+      layer.bringToFront?.();
+    });
+    layer.on('mouseout', () => {
+      if (!selectedRouteId && typeof layer.setStyle === 'function') layer.setStyle({ opacity: 0.85, weight: baseWeight });
+    });
   });
+  if (selectedRouteId && routeRecords.has(selectedRouteId)) selectRoute(selectedRouteId, false);
+  else selectedRouteId = null;
   return group;
+}
+
+function selectRoute(routeId, fit = true) {
+  selectedRouteId = routeId;
+  routeRecords.forEach((record, id) => {
+    const selected = id === routeId;
+    const categoryGroup = routeLayer?.categoryGroups?.get(record.type);
+    if (categoryGroup) {
+      if (selected && !categoryGroup.hasLayer(record.highlightOutline)) record.highlightOutline.addTo(categoryGroup);
+      if (!selected && categoryGroup.hasLayer(record.highlightOutline)) categoryGroup.removeLayer(record.highlightOutline);
+    }
+    record.detailLayers.forEach((detail) => {
+      if (!categoryGroup) return;
+      if (selected && !categoryGroup.hasLayer(detail)) detail.addTo(categoryGroup);
+      if (!selected && categoryGroup.hasLayer(detail)) categoryGroup.removeLayer(detail);
+    });
+    if (typeof record.layer.setStyle === 'function') {
+      record.layer.setStyle({ opacity: selected ? 1 : 0.22, weight: selected ? record.baseWeight + 3 : Math.max(2, record.baseWeight - 1) });
+    }
+    if (selected) {
+      record.layer.bringToFront?.();
+      record.detailLayers.forEach((detail) => detail.bringToFront?.());
+      record.layer.openTooltip?.();
+      if (fit && record.layer.getBounds) map.flyToBounds(record.layer.getBounds(), { padding: [70, 70], maxZoom: 14, duration: 0.65 });
+    } else record.layer.closeTooltip?.();
+  });
+  document.body.classList.toggle('route-selected', Boolean(routeId));
+}
+
+function clearRouteSelection() {
+  selectedRouteId = null;
+  routeRecords.forEach((record) => {
+    const categoryGroup = routeLayer?.categoryGroups?.get(record.type);
+    if (categoryGroup?.hasLayer(record.highlightOutline)) categoryGroup.removeLayer(record.highlightOutline);
+    record.detailLayers.forEach((detail) => categoryGroup?.removeLayer(detail));
+    record.layer.setStyle?.({ opacity: 0.85, weight: record.baseWeight });
+    record.layer.closeTooltip?.();
+  });
+  document.body.classList.remove('route-selected');
 }
 
 function addRouteStyleControl(routes) {
@@ -223,7 +315,9 @@ function addRouteStyleControl(routes) {
       if (!button || button.disabled || button.dataset.mode === routeStyleMode) return;
       routeStyleMode = button.dataset.mode;
       if (routeLayer) map.removeLayer(routeLayer);
+      selectedRouteId = null;
       routeLayer = createRouteLayer(routes, routeStyleMode);
+      document.body.classList.remove('route-selected');
       updateState();
     });
     updateState();
@@ -298,5 +392,7 @@ async function loadMapData() {
   addRouteStyleControl(routes);
   renderCategorySummary(places, routes);
 }
+
+map.on('click', clearRouteSelection);
 
 loadMapData().catch((error) => { const node = document.querySelector('#error'); node.textContent = error.message; node.hidden = false; });

@@ -48,6 +48,66 @@
   transform-origin: top left;
 }
 
+.leaflet-tooltip.route-tooltip {
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: 0 3px 12px #17271f38;
+}
+
+.leaflet-tooltip.route-tooltip .route-tooltip-content {
+  position: relative;
+  display: block;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: var(--route-tooltip-color, #2587c8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.leaflet-tooltip-top.route-tooltip::before {
+  display: none;
+}
+
+.leaflet-tooltip.route-tooltip .route-tooltip-content::after {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid var(--route-tooltip-color, #2587c8);
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.route-direction-marker {
+  border: 0;
+  background: transparent;
+}
+
+.route-direction-marker span {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--route-direction-color, #2587c8);
+  box-shadow: 0 2px 8px #17271f4d;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .route-finish-marker {
   border: 0;
   background: transparent;
