@@ -190,12 +190,13 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
     let layer;
     if (styleMode === 'speed' && typeof L.hotline === 'function' && coordinates.length === speeds.length) {
       const hotlineData = coordinates.map(([longitude, latitude], index) => [latitude, longitude, speeds[index]]);
+      const routeColor = /^#[0-9a-f]{6}$/i.test(item.color || '') ? item.color : ROUTE_TYPE_CONFIG[type]?.color || '#2587c8';
       layer = L.hotline(hotlineData, {
         min: item.minSpeedKmh ?? 0,
         max: item.maxSpeedKmh ?? 35,
         weight: 7,
         outlineWidth: 2,
-        outlineColor: '#ffffff',
+        outlineColor: type === 'cycling' ? routeColor : '#ffffff',
         palette: {
           0: '#2c7bb6',
           0.25: '#00a6ca',
@@ -213,9 +214,11 @@ function createRouteLayer(routes, styleMode = routeStyleMode) {
     bindRouteDetails(layer, item);
     addToCategoryGroup(group, type, layer);
     const detailLayers = [];
+    const routeColor = /^#[0-9a-f]{6}$/i.test(item.color || '') ? item.color : ROUTE_TYPE_CONFIG[type]?.color || '#2587c8';
     const highlightOutline = L.polyline(coordinates.map(([longitude, latitude]) => [latitude, longitude]), {
-      color: '#ffffff', weight: (styleMode === 'speed' ? 7 : Number(item.weight || 5)) + 7,
-      opacity: 0.9, interactive: false,
+      color: type === 'cycling' ? routeColor : '#ffffff',
+      weight: (styleMode === 'speed' ? 7 : Number(item.weight || 5)) + (type === 'cycling' ? 5 : 7),
+      opacity: type === 'cycling' ? 0.72 : 0.9, interactive: false,
     });
     if (coordinates.length) {
       const distanceMarker = createDistanceMarker(coordinates, item, type);
