@@ -304,5 +304,11 @@
     "longitude": 118.65028381347658,
     "latitude": 31.91013173797037,
     "category": "scenic"
+  },
+  {
+    "name": "常来小聚",
+    "longitude": 113.31990029932126,
+    "latitude": 23.135514518892816,
+    "category": "food"
   }
 ]
