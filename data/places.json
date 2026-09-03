@@ -310,5 +310,23 @@
     "longitude": 113.31990029932126,
     "latitude": 23.135514518892816,
     "category": "food"
+  },
+  {
+    "name": "吐鲁番",
+    "longitude": 89.24141047693354,
+    "latitude": 42.999178559584365,
+    "category": "destination"
+  },
+  {
+    "name": "满洲里",
+    "longitude": 117.3708351938263,
+    "latitude": 49.5966519361563,
+    "category": "destination"
+  },
+  {
+    "name": "德令哈",
+    "longitude": 97.36074161648372,
+    "latitude": 37.369399676994654,
+    "category": "destination"
   }
 ]

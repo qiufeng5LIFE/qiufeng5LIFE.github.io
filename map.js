@@ -8,6 +8,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const MARKER_ICONS = {
   scenic: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 20 7-12 4 7 2-3 5 8H3Z"/><path d="m8.6 10.4 1.4 2.1 1.2-1.6"/></svg>',
   food: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M4 3v5c0 2 6 2 6 0V3M7 11v10M15 3v18M15 3c4 2 5 7 0 10"/></svg>',
+  destination: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4"/><path d="M7 5h11l-3 4 3 4H7"/></svg>',
   special: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.5 5.5 6 .7-4.4 4.1 1.2 5.8-5.3-3-5.3 3 1.2-5.8-4.4-4.1 6-.7L12 3Z"/></svg>',
   cycling: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="4"/><circle cx="18" cy="17" r="4"/><path d="m6 17 4-8h4l4 8M9 11h6M10 9 8 6h3"/></svg>',
   motorcycle: '<svg class="marker-glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="m8 17 3-6h4l4 6M10 11 8 8h4M15 11l2-3h3"/></svg>',
@@ -16,7 +17,8 @@ const MARKER_ICONS = {
 
 const PLACE_TYPE_CONFIG = {
   scenic: { color: '#27956a', accentColor: '#d9f4e6', icon: 'scenic', shape: 'circle', label: '风景' },
-  food: { color: '#ed8a32', accentColor: '#fff0d5', icon: 'food', shape: 'circle', label: '餐饮美食' },
+  food: { color: '#ed8a32', accentColor: '#fff0d5', icon: 'food', shape: 'circle', label: '食物' },
+  destination: { color: '#287fa3', accentColor: '#d9eef5', icon: 'destination', shape: 'circle', label: '目的地' },
   special: { color: '#7d4aa8', accentColor: '#eadcf5', icon: 'special', shape: 'star', label: '特殊' },
 };
 
